@@ -9,24 +9,46 @@ namespace Plugable3900Tester
 {
     public partial class Form1 : Form
     {
-        private static readonly String VLC_PATH = "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe";
-        private static readonly String CHROME_PATH = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
+
         private CountDownTimer timer = new CountDownTimer();
 
         public Form1()
         {
             InitializeComponent();
-            initCountdown();
 
-            foreach (var screen in Screen.AllScreens) {
-                // For each screen, add the screen properties to a list box.
-                Console.WriteLine("Device Name: " + screen.DeviceName);
-                Console.WriteLine("    Bounds: " + screen.Bounds.ToString());
-                Console.WriteLine("    Type: " + screen.GetType().ToString());
-                Console.WriteLine("    Working Area: " + screen.WorkingArea.ToString());
-                Console.WriteLine("    Primary Screen: " + screen.Primary.ToString());
-                Console.WriteLine();
-            }
+            Console.WriteLine("Screens: " + Screen.AllScreens.Length);
+            printScreenProperties(Screen.AllScreens[0]);
+            printScreenProperties(Screen.AllScreens[1]);
+            printScreenProperties(Screen.AllScreens[2]);
+
+        }
+
+        private void printScreenProperties(Screen screen)
+        {
+            Console.WriteLine("Device Name: " + screen.DeviceName);
+            Console.WriteLine("    Bounds: " + screen.Bounds.ToString());
+            Console.WriteLine("    Type: " + screen.GetType().ToString());
+            Console.WriteLine("    Working Area: " + screen.WorkingArea.ToString());
+            Console.WriteLine("    Primary Screen: " + screen.Primary.ToString());
+            Console.WriteLine();
+        }
+
+        private void loadProperties()
+        {
+            Properties.Settings.Default.Reload();
+            textBoxVLC.Text = Properties.Settings.Default.VLC_PATH;
+            textBoxChrome.Text = Properties.Settings.Default.CHROME_PATH;
+            textBoxVideo.Text = Properties.Settings.Default.VID_VIDEO;
+            textBoxYoutube.Text = Properties.Settings.Default.VID_YOUTUBE;
+        }
+
+        private void saveProperties()
+        {
+            Properties.Settings.Default.VLC_PATH = textBoxVLC.Text;
+            Properties.Settings.Default.CHROME_PATH = textBoxChrome.Text;
+            Properties.Settings.Default.VID_VIDEO = textBoxVideo.Text;
+            Properties.Settings.Default.VID_YOUTUBE = textBoxYoutube.Text;
+            Properties.Settings.Default.Save();
         }
 
         private void initCountdown()
@@ -43,16 +65,31 @@ namespace Plugable3900Tester
 
         private void timerDone()
         {
-            MessageBox.Show("Timer finished the work!");
+            stopTest();
         }
+
+        private void stopTest()
+        {
+            PROCESS_CHROME.Kill();
+            PROCESS_VLC.Kill();
+            timer.Pause();
+            timer.Reset();
+            buttonStart.Enabled = true;
+            buttonStop.Enabled = false;
+            MessageBox.Show("Test has finished.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        Process PROCESS_CHROME;
+        Process PROCESS_VLC;
 
         private void button1_Click(object sender, EventArgs e)
         {
-
-            launchFullscreenVLCVideo(Screen.AllScreens[1], "C:\\Users\\Eric\\Videos\\Eric Golde 2018 SAAS Begining Film 16mm.mp4");
-            launchChromeWithYoutubeStub(Screen.AllScreens[3], "LXb3EKWsInQ");
+            PROCESS_VLC = launchFullscreenVLCVideo(Screen.AllScreens[1], textBoxVideo.Text);
+            PROCESS_CHROME = launchChromeWithYoutubeStub(Screen.AllScreens[2], textBoxYoutube.Text);
+            initCountdown();
             timer.Start();
-
+            buttonStart.Enabled = false;
+            buttonStop.Enabled = true;
         }
 
         private void runCmd(String cmd)
@@ -68,12 +105,12 @@ namespace Plugable3900Tester
         private Process launchChromeWithLink(Screen screen, String url)
         {
             Rectangle screenCoords = screen.Bounds;
-            return maximiseProgramOnMonitor(screen, CHROME_PATH, "\"" + url + "\" --window-position=" + screenCoords.X + "," + screenCoords.Y + " --window-size=" + screenCoords.Width + "," + screenCoords.Height + " --start-maximized", false, false); //Chrome is a special snowflake
+            return maximiseProgramOnMonitor(screen, textBoxChrome.Text, "\"" + url + "\" --window-position=" + screenCoords.X + "," + screenCoords.Y + " --window-size=" + screenCoords.Width + "," + screenCoords.Height + " --start-maximized", false, false); //Chrome is a special snowflake
         }
 
         private Process launchFullscreenVLCVideo(Screen screen, String video)
         {
-            return maximiseProgramOnMonitor(screen, VLC_PATH, "\"" + video + "\" --fullscreen", true, true);
+            return maximiseProgramOnMonitor(screen, textBoxVLC.Text, "\"" + video + "\" --fullscreen", true, true);
         }
 
         private Process maximiseProgramOnMonitor(Screen screen, String program, String arguments, Boolean moveWindow, Boolean maximizeWindowUser32)
@@ -130,5 +167,19 @@ namespace Plugable3900Tester
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            loadProperties();
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            saveProperties();
+        }
+
+        private void buttonStop_Click(object sender, EventArgs e)
+        {
+            stopTest();
+        }
     }
 }

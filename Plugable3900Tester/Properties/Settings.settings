@@ -1,7 +1,18 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Plugable3900Tester.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="VLC_PATH" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe</Value>
+    </Setting>
+    <Setting Name="CHROME_PATH" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe</Value>
+    </Setting>
+    <Setting Name="VID_VIDEO" Type="System.String" Scope="User">
+      <Value Profile="(Default)">video.mp4</Value>
+    </Setting>
+    <Setting Name="VID_YOUTUBE" Type="System.String" Scope="User">
+      <Value Profile="(Default)">LXb3EKWsInQ</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
