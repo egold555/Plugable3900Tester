@@ -110,7 +110,7 @@ namespace Plugable3900Tester
 
         private Process launchFullscreenVLCVideo(Screen screen, String video)
         {
-            return maximiseProgramOnMonitor(screen, textBoxVLC.Text, "\"" + video + "\" --fullscreen", true, true);
+            return maximiseProgramOnMonitor(screen, textBoxVLC.Text, "\"" + video + "\" --fullscreen --qt-fullscreen-screennumber=1", true, true);
         }
 
         private Process maximiseProgramOnMonitor(Screen screen, String program, String arguments, Boolean moveWindow, Boolean maximizeWindowUser32)
@@ -121,7 +121,7 @@ namespace Plugable3900Tester
 
             //IntPtr id = getProcessId(p); //Also used to make sure p.MainWindowHandle is not 0. DO NOT REMOVE THIS LINE
 
-            Console.WriteLine("Opened prossess \"" + program + "\" on Monitor \"" + screen.DeviceName + "\".");
+            Console.WriteLine("Opened prossess \"" + program + "\" on Monitor \"" + screen.DeviceName + "\". with arguments " + arguments);
 
             Rectangle screenCoords = screen.Bounds;
 

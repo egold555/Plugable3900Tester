@@ -25,7 +25,7 @@ namespace Plugable3900Tester.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\\\Program Files (x86)\\\\VideoLAN\\\\VLC\\\\vlc.exe")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\\\Program Files\\\\VideoLAN\\\\VLC\\\\vlc.exe")]
         public string VLC_PATH {
             get {
                 return ((string)(this["VLC_PATH"]));
